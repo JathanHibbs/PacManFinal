@@ -1,0 +1,125 @@
+﻿/*
+    By: Jathan Hibbs
+    Date: 5/17/2018
+*/
+
+body 
+{
+    font-size: 18px;
+    font-family: Arial, Helvetica, sans-serif;
+    margin:0;
+    padding:0;
+}
+
+a
+{
+    text-decoration: none;
+}
+
+header, footer {
+    background-color: black;
+    color: white;
+    text-align: center;
+}
+
+header
+{
+    top:0;
+    padding:0;
+    margin:0;
+}
+
+h1 {
+    margin: 0;
+    padding: 10px;
+    color: white;
+    display:inline-block;
+}
+
+ul
+{
+    margin:0;
+    padding:0;
+}
+
+ul li 
+{
+    display: inline-block;
+    margin-left:20px;
+    margin-right:20px;
+    margin-top:5px;
+    margin-bottom:5px;
+}
+
+nav ul li
+{
+    margin-bottom:10px;
+}
+
+nav ul li a
+{
+    padding:5px;
+    border-radius:5px;
+    border:solid 1px black;
+    background-color:white;
+    color:black;
+}
+
+nav ul li a:hover
+{
+    background-color:black;
+    color:white;
+    border:solid 1px white;
+}
+
+.current {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+section {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateY(+31px);
+    background-color: azure;
+    width: 75%;
+    height: 75%;
+    filter: drop-shadow(0 0 15px black);
+    text-align: center;
+    background-color:black;
+    color:white;
+
+    border:solid 3px aqua;
+}
+
+section div
+{
+    display:inline-block;
+    width:49%;
+    height:49%;
+    margin:auto;
+    text-align:center;
+    margin-top:5px;
+    overflow:hidden;
+}
+
+section div img
+{
+    height:85%;
+    width:100%;
+    
+}
+
+section div p, section div h2
+{
+    margin:0;
+}
+
+footer
+{
+    position:fixed;
+    bottom:0;
+    width:100%;
+    
+}

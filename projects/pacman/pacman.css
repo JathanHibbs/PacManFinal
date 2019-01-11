@@ -1,0 +1,21 @@
+﻿section
+{
+    width:480px;
+    height:672px;
+    background-image:url("assets/myMap3.png");
+    background-size:480px 672px;
+	border:none;
+	overflow:hidden;
+}
+
+img
+{
+    margin:0;
+    padding:0;
+    position:fixed;
+}
+
+#scoreBoard
+{
+	text-align:center;
+}

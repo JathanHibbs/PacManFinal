@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Those Four Dudes</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="Source.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../../css/main.css"/>
+</head>
+<body>
+    <header>
+        <a href="../../index.html"><h1>Those Four Dudes</h1></a>
+        <nav>
+            <ul>
+                <li><a href="../snake/snake.html">Snake</a></li>
+                <li><a href="tanks.html" class="current">Multiplayer Tanks</a></li>
+                <li><a href="../geography/geography.html">Ancient World Geography</a></li>
+                <li><a href="../pacman/pacman.html">Pac-Man</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="tankGame">
+            <canvas id="canvas" height="540" width="700"></canvas></br>
+			<script>$('#canvas').hide();</script>
+			<p><h2>Controls</h2>Adjust Aim (Left/Right Arrows) : Adjust Power (Up/Down Arrows): Move Tank (Z/X) : Fire (Space Bar)</p>
+			<section id="startForm">
+			<br><br>
+			<p>Select your colors bellow to begin the game</p>
+			<form id="colorPicker">
+				<table id="colorTable" align="center">
+					<tr>
+						<th>Player One</th>
+						<th></th>
+						<th>Player Two</th>
+					</tr>
+					<tr>
+						<td><input type="radio" name="colorOne" value="0" CHECKED></td>
+						<td bgcolor="red" width="150"></td>
+						<td><input type="radio" name="colorTwo" value="0"></td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="colorOne" value="1"></td>
+						<td bgcolor="blue"></td>
+						<td><input type="radio" name="colorTwo" value="1" CHECKED></td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="colorOne" value="2"></td>
+						<td bgcolor="teal"></td>
+						<td><input type="radio" name="colorTwo" value="2"></td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="colorOne" value="3"></td>
+						<td bgcolor="yellow"></td>
+						<td><input type="radio" name="colorTwo" value="3"></td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="colorOne" value="4"></td>
+						<td bgcolor="gray"></td>
+						<td><input type="radio" name="colorTwo" value="4"></td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="colorOne" value="5"></td>
+						<td bgcolor="orange"></td>
+						<td><input type="radio" name="colorTwo" value="5"></td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="colorOne" value="6"></td>
+						<td bgcolor="purple"></td>
+						<td><input type="radio" name="colorTwo" value="6"></td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="colorOne" value="7"></td>
+						<td bgcolor="pink"></td>
+						<td><input type="radio" name="colorTwo" value="7"></td>
+					</tr>
+					<tr>
+						<td height="30"></td>
+					</tr>
+					<tr>
+						<td bgcolor="pink"><font color="black">Double Health</font></td>
+						<td></td>
+						<td bgcolor="lime"><font color="black">Speed Rounds</font></td>
+					</tr>
+					<tr>
+						<td bgcolor="pink"><input type="checkbox" id="doubleHealth"></td>
+						<td></td>
+						<td bgcolor="lime"><input type="checkbox" id="speedRound"></td>
+					</tr>
+				</table>
+			</form>
+			<br>
+			<button id="startButton">Start New Game</button>
+			</section>
+
+
+        </section>
+    </main>
+    <footer>
+        <ul>
+            <li>Kevin Blair</li>
+            <li>Daniel Trammell</li>
+            <li>Hayden Vara</li>
+            <li>Jathan Hibbs</li>
+        </ul>
+    </footer>
+</body>
+</html>

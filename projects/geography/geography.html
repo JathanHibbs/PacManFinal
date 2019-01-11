@@ -1,0 +1,521 @@
+﻿<!--
+@Author: Hayden Vara
+@desc: The reasoning for the js, jq, and geojson being contained in the main html is because I couldnt figure out how to externally reference to one script page containing all of it.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Those Four Dudes</title>
+
+    <link rel="stylesheet" type="text/css" href="../../css/main.css"/>
+	<!--Leaflet-->
+	<link rel="stylesheet" type="text/css" href="lib/leaflet/leaflet.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/leaflet/leaflet.js"></script>
+	<script type="text/javascript" src="data/countries.geojson"></script>
+	<style type="text/css">
+		#map {height:800px;}
+	</style>
+</head>
+<body>
+	<header>
+        <a href="../../index.html"><h1>Those Four Dudes</h1></a>
+        <nav>
+            <ul>
+                <li><a href="../snake/snake.html">Snake</a></li>
+                <li><a href="../tanks/tanks.html">Multiplayer Tanks</a></li>
+                <li><a href="geography.html" class="current">Ancient World Geography</a></li>
+                <li><a href="../pacman/pacman.html">Pac-Man</a></li>
+            </ul>
+        </nav>
+	</header>
+    <main>
+        <section id="bod">
+	<table id="t1">
+		<div id="play">
+		<tr>
+			<td>
+		<input type="button" name="TeamOne" value=" Green  " onclick="pOneClick()"></td><td><p id="pOnePoints">0</p></td>
+	</tr>
+		 <tr>
+		<td>
+		<input type="button" name="TeamTwo" value=" Orange" onclick="pTwoClick()"></td><td> <p id="pTwoPoints">0</p></td>
+		 </tr>
+		 <tr>
+		 	<td>
+		<input type="button" name="TeamThree" value="  Red    " onclick="pThreeClick()"></td><td> <p id="pThreePoints">0</p></td>
+	</tr>
+		 
+		</div>
+	
+			<tr id="row1">
+				<td>
+		<input type="button" name="Execute" value="Rome" onclick="romeClick()">
+		</td>
+		<td>
+		<input type="button" name="Execute" value="Cenchreae" onclick="cenClick()">
+		</td>
+		<td>
+		<input type="button" name="Execute" value="Tarsus" onclick="tarsusClick()">
+		</td>
+			</tr>
+			<tr id="row2">
+				<td>
+		<input type="button" name="Execute" value="Nazareth" onclick="nazClick()">
+		</td>
+		<td>
+		<input type="button" name="Execute" value="Cyrene" onclick="cyreneClick()">
+		</td>
+		<td>
+		<input type="button" name="Execute" value="Alexandria" onclick="alexClick()">
+		</td>
+			</tr>
+			<tr id="row3">
+				<td>
+		<input type="button" name="Execute" value="Athens" onclick="AthensClick()">
+	</td>
+	<td>
+		<input type="button" name="Execute" value="Corinth" onclick="CorinthClick()">
+	</td>
+	<td>
+		<input type="button" name="Execute" value="Damascus" onclick="DamascusClick()">
+	</td>
+			</tr>
+			<tr id="row4">
+			<td>
+		<input type="button" name="Execute" value="Rhodes" onclick="RhodesClick()">
+	</td>
+	<td>
+		<input type="button" name="Execute" value="Antioch" onclick="AntiochClick()">
+		</td>
+		<td>
+		<input type="button" name="Execute" value="Neapolis" onclick="NeapolisClick()">
+		</td>
+			</tr>
+			<tr id="row5">
+				<td>
+		<input type="button" name="Execute" value="Cyprus" onclick="CyprusClick()">
+	</td>
+	<td>
+		<input type="button" name="Execute" value="Sidon" onclick="SidonClick()">
+	</td>
+	<td>
+		<input type="button" name="Execute" value="Ephesus" onclick="EphesusClick()">
+		</td>
+			</tr>
+		</table>
+	<p id="conclude">Collecting Data...</p>
+	<p id="instructions">How To Play:<br>Click on color buttons to activate player icons<br>Drag and drop the icons then press player icon again to lock in<br>Click on the desired city to check distance<br>Points are awarded as,<br>First: 5 points<br> Second: 3 points<br>Third: 1 point</p>
+	
+		</section>
+		<div id="map"></div>
+		 </main>
+    <footer>
+        <ul>
+            <li>Kevin Blair</li>
+            <li>Daniel Trammell</li>
+            <li>Hayden Vara</li>
+            <li>Jathan Hibbs</li>
+        </ul>
+    </footer>
+		<script type="text/javascript">
+
+
+			//css
+
+			$("body").css({"height": "100%", "width": "100%"});
+			$("#bod").css("background", "linear-gradient(to bottom right, #545454, #66a6ff");
+			$("p").css("display", "inline");
+			$("input").css("border-radius", "5px");
+			$("#t1").css({"float":"left",
+						"display":"inline-block",
+						"text-align": "left",
+						"margin-top": "1%"});
+			$("#conclude").css({"font-family": "Georgia", "position" : "absolute","left": "1%", "bottom": "50%"});
+			$("#instructions").css({"font-family": "Georgia", "position" : "absolute", "text-align": "left","left": "1%", "bottom": "1%"});
+			$("#map").css({"height": "600px", "width":"1250px","border-radius": "25px", "position": "absolute", "width" : "40%", "right": "15%", "top" : "20%" });
+		
+	
+			
+			var ri= 0, ti= 0, ni= 0, ci= 0, ai= 0, ceni= 0, at= 0, co= 0, da= 0, rh= 0, an= 0, ne= 0, cy= 0, mi= 0, si= 0, ep= 0, ci=0;
+			var countriesLayer;
+			//declare icon
+			var LeafIcon = L.Icon.extend({
+			    options: {
+			        iconAnchor:   [22, 94],
+			        shadowAnchor: [4, 62],
+			        popupAnchor:  [-3, -76]
+			    }
+			});
+
+					//icon
+
+
+							var greenIcon = new LeafIcon({iconUrl: 'marker-icon-green.png'}),
+				   			redIcon = new LeafIcon({iconUrl: 'marker-icon-red.png'}),
+				    		orangeIcon = new LeafIcon({iconUrl: 'marker-icon-orange.png'});
+		/**
+		on mouse drag over, the country will highlight
+		*/
+		function highlightFeature(e) {
+				var layer = e.target;
+				layer.setStyle(
+				{
+					weight : 5,
+					color : "black",
+					fillColor : "white",
+					fillOpacity : 0.2
+				}
+					);
+				if(!L.Browser.ie && !L.Browser.opera) {
+					layer.bringToFront();
+				}
+			}
+			/**
+			sets the color of the countries
+			*/
+	function countriesStyle(feature) {
+		return {
+			fillColor: "black",
+			weight : 2,
+			opacity : 1,
+			color : "white",
+			dashArray : 3,
+			fillOpacity : 0.7
+			}
+	}
+				/*
+				revert style to original design
+				**/
+				function resetHighlight(e) {
+					countriesLayer.resetStyle(e.target);
+				}
+				/**
+				zoom into map on click 
+				*/
+				function zoomToFeature(e) {
+					map.fitBounds(e.target.getBounds());
+				}
+					/**
+					set what happens on mouse over and click
+					*/
+					function countriesOnEachFeature(feature, layer) {
+						layer.on(
+						{
+							mouseover : highlightFeature,
+							mouseout : resetHighlight,
+							click : zoomToFeature
+						}
+							);
+					}
+
+					//declare map
+			var map = L.map("map").setView([43.5330,12.3040],4);
+			countriesLayer = L.geoJson(countries,
+			{
+				style : countriesStyle,
+				onEachFeature : countriesOnEachFeature
+			}
+				).addTo(map);
+						//calculate the distance between markers
+						var count = 0;
+			 			function calc(x1, y1, x2, y2) {
+			 				 	function deg2rad(deg){return deg * (Math.PI/180);}
+								  function square(x){return Math.pow(x, 2);}
+								  var r=6371; // radius of the earth in km
+								  lat1=deg2rad(y1);
+								  lat2=deg2rad(y2);
+								  var lat_dif=lat2-lat1;
+								  var lng_dif=deg2rad(x2-x1);
+								  var a=square(Math.sin(lat_dif/2))+Math.cos(lat1)*Math.cos(lat2)*square(Math.sin(lng_dif/2));
+								  var d=2*r*Math.asin(Math.sqrt(a));
+								  return d;
+								  console.log("calc");
+			 			}
+			 			var winO=0,
+			 			 	winT=0, 
+			 			 	winTh=0;
+			 			 	//display points
+		 			function equalPoint() {
+		 				 		$("#pOnePoints").empty().append(winO);
+		 						$("#pTwoPoints").empty().append(winT);
+		 						$("#pThreePoints").empty().append(winTh);
+		 			}
+		 			//add points to players
+		 			function addPoints(j, k, l) {
+		 				winO += j;
+		 				winT += k;
+		 				winTh+= l;
+		 			}
+		 /**
+		 Display the winner of the round, add points
+		 */
+		function win(one, two, three) {
+			console.log("win");
+			if(one<two && one<three && three<two) {
+				console.log("green");						
+					addPoints(5,1,3);
+					equalPoint();
+				 $("#conclude").empty().append("<p>First:Green | Second:Orange | Third:Red</p>");
+				} else if( one<two && one>three && two>three){
+					console.log("red");
+					addPoints(3,1,5);
+					equalPoint();
+				 $("#conclude").empty().append("<p>First:Red | Second:Green | Third:Orange</p>");
+				}
+			    if(one>two && two<three && three<one) {
+					console.log("orange");
+					addPoints(1,5,3);
+					equalPoint();
+				 	$("#conclude").empty().append("<p>First:Orange | Second:Red | Third:Green</p>");
+				} else if(one>two && two>three && three<one){
+					console.log("red");
+					addPoints(1,3,5);
+				    equalPoint();
+				 	$("#conclude").empty().append("<p>First:Red | Second:Orange | Third:Green</p>");
+				} if(three>one && one>two && two<three) {
+					console.log("orange");
+					addPoints(3,5,1);
+					equalPoint();
+				 $("#conclude").empty().append("<p>First - Orange | Second - Green | Third - Red</p>");
+				} else if(three>one && one<two && two<three) {
+					console.log("red");
+					addPoints(5,3,1);
+					equalPoint();
+				$("#conclude").empty().append("<p>First:Green | Second:Orange | Third:Red</p>");
+				}
+			}
+ 			
+							//city markers
+							var med      = [34.553127,18.048012];
+							var medo     = [30.553127,18.048012];
+							var medt     = [27.553127,18.048012];
+							var rome     = [41.902782,12.462204];
+							var tarsus   = [36.916667,34.895556];
+							var naz      = [32.699635,35.303547];
+							var cyrene   = [32.825,21.858056];
+							var alex     = [31.205753,29.924526];
+							var cen      = [37.866667,23];
+							var Athens   = [37.983810,23.727539];
+							var Corinth  = [37.940880,22.944860];
+							var Damascus = [33.510414,36.278336];
+							var Rhodes   = [36.121723,28.059464];
+							var Antioch  = [36.12198,36.10185];
+							var Neap     = [38.6714400,21.3627400];
+							var Cyprus   = [35.11,33.54];
+							var Miletus  = [37.3149,27.1642];
+							var Sidon    = [33.5571,35.3729];
+							var Ephesus  = [37.5628,27.2031];
+
+
+							//create invsible markers 
+						var playerOne = L.marker(med, {
+									opacity:0,
+									icon: greenIcon
+								}).addTo(map);
+						var playerTwo = L.marker(medo, {
+									opacity:0,
+									icon: orangeIcon
+								}).addTo(map);
+						var playerThree = L.marker(medt, {
+									opacity:0,
+									icon:redIcon
+								}).addTo(map);
+						var rome = L.marker(rome, {
+									opacity:0
+								}).addTo(map);
+						var tarsus = L.marker(tarsus, {
+									opacity:0
+								}).addTo(map);
+						var cyrene = L.marker(cyrene, {
+									opacity:0
+								}).addTo(map);
+						var naz = L.marker(naz, {
+									opacity:0
+								}).addTo(map);
+						var alex = L.marker(alex, {
+									opacity:0
+								}).addTo(map);
+						var cen = L.marker(cen, {
+									opacity:0
+								}).addTo(map);
+						var Athens = L.marker(Athens, {
+									opacity:0
+								}).addTo(map);
+						var Corinth = L.marker(Corinth, {
+									opacity:0
+								}).addTo(map);
+						var Damascus = L.marker(Damascus, {
+									opacity:0
+								}).addTo(map);
+						var Rhodes = L.marker(Rhodes, {
+									opacity:0
+								}).addTo(map);
+						var Antioch = L.marker(Antioch, {
+									opacity:0
+								}).addTo(map);
+						var Neapolis = L.marker(Neap, {
+									opacity:0
+								}).addTo(map);
+						var Cyprus = L.marker(Cyprus, {
+									opacity:0
+								}).addTo(map);
+						var Miletus = L.marker(Miletus, {
+									opacity:0
+								}).addTo(map);
+						var Sidon = L.marker(Sidon, {
+									opacity:0
+								}).addTo(map);
+						var Ephesus = L.marker(Ephesus, {
+									opacity:0
+								}).addTo(map);
+
+								//Creating a Marker	
+								function markerCreate(place, name) {
+									place.bindPopup(name, {minWidth: 50});
+								}
+
+					//creating markers
+					markerCreate(rome, "Rome");
+					markerCreate(tarsus, "Tarsus");
+					markerCreate(naz, "Nazareth");
+					markerCreate(cyrene, "Cyrene");
+					markerCreate(cen, "Cenchreae");
+					markerCreate(alex, "Alexandria");
+					markerCreate(Athens, "Athens");
+					markerCreate(Corinth, "Corinth");
+					markerCreate(Damascus, "Damascus");
+					markerCreate(Rhodes, "Rhodes");
+					markerCreate(Antioch, "Antioch");
+					markerCreate(Neapolis, "Neapolis");
+					markerCreate(Cyprus, "Cyprus");
+					markerCreate(Miletus, "Miletus");
+					markerCreate(Sidon, "Sidon");
+					markerCreate(Ephesus, "Ephesus");
+					
+					var pOneLat, pOneLng, pTwoLat, pTwoLng, pThreeLat, pThreeLng, pOne = 0, pTwo =0, pThree = 0;
+								function visible(pl, p, lt, ln) {
+									if(p%2==0) {pl.setOpacity(1);
+						       			pl.dragging.enable();
+						       			return 0;
+						       	} else {pl.setOpacity(0);
+						       			pl.dragging.disable();
+						       			lt = pl.getLatLng().lat;
+						       			ln = pl.getLatLng().lng;
+						       		}
+								}
+	        //player markers
+	       
+	      
+	        function pOneClick() {
+	       		if(pOne%2==0) {playerOne.setOpacity(1);
+						       playerOne.dragging.enable();
+						       	} else {playerOne.setOpacity(0);
+						       			playerOne.dragging.disable();
+						       			pOneLat = playerOne.getLatLng().lat;
+						       			pOneLng = playerOne.getLatLng().lng;
+						       		}
+	       		pOne++;
+	       	}
+	       		
+	       		
+	        function pTwoClick() {
+	       		if(pTwo%2==0) {playerTwo.setOpacity(1);
+						       playerTwo.dragging.enable();
+						       	} else {playerTwo.setOpacity(0);
+						       			playerTwo.dragging.disable();
+						       			pTwoLat = playerTwo.getLatLng().lat;
+						       			pTwoLng = playerTwo.getLatLng().lng;
+						       		}
+	       		pTwo++;
+	       	}
+	       		
+	       			
+	        function pThreeClick() {
+	       		if(pThree%2==0) {playerThree.setOpacity(1);
+						       playerThree.dragging.enable();
+						       	} else {playerThree.setOpacity(0);
+						       			playerThree.dragging.disable();
+						       			pThreeLat = playerThree.getLatLng().lat;
+						       			pThreeLng = playerThree.getLatLng().lng;
+						       		}
+	       		pThree++;
+	       }
+						       var pOneTest=0, pTwoTest=0, pThreeTest=0;
+						       //calculate the lat and lng of the players and determine who places where
+						       function calcLatLng(place) {
+						       	console.log("calclatlng");
+						       		pOneTest   = calc(pOneLng, pOneLat, place.getLatLng().lng, place.getLatLng().lat);
+						       		pTwoTest   = calc(pTwoLng, pTwoLat, place.getLatLng().lng, place.getLatLng().lat);
+						       		pThreeTest = calc(pThreeLng, pThreeLat, place.getLatLng().lng, place.getLatLng().lat);
+						       		win(pOneTest, pTwoTest, pThreeTest);
+						       }
+			  //all independant onclick functions
+	       function romeClick() {
+	       	if(ri%2==0) {rome.setOpacity(1);
+	       		calcLatLng(rome);
+	       	} else {rome.setOpacity(0);}ri++;}
+	       function tarsusClick() {
+	       	if(ti%2==0) {tarsus.setOpacity(1);
+					calcLatLng(tarsus);
+	       	} else {tarsus.setOpacity(0);}ti++;}
+	       function nazClick() {
+	       	if(ni%2==0) {naz.setOpacity(1);
+	       			calcLatLng(naz);
+	       	} else {naz.setOpacity(0);}ni++;}
+	       function cyreneClick() {
+	       	if(ci%2==0) {cyrene.setOpacity(1);
+	       		calcLatLng(cyrene);
+	       	} else {cyrene.setOpacity(0);}ci++;}
+	       function alexClick() {
+	       	if(ai%2==0) {alex.setOpacity(1);
+	       		calcLatLng(alex);
+	       	} else {alex.setOpacity(0);}ai++;}
+	       function cenClick() {
+	       	if(ceni%2==0) {cen.setOpacity(1);
+	       		calcLatLng(cen);
+	       	} else {cen.setOpacity(0);}ceni++;}
+	       	function AthensClick() {
+	       	if(ai%2==0) {Athens.setOpacity(1);
+	       		calcLatLng(Athens);
+	       	} else {Athens.setOpacity(0);}ai++;}
+	       	function CorinthClick() {
+	       	if(co%2==0) {Corinth.setOpacity(1);
+	       		calcLatLng(Corinth);
+	       	} else {Corinth.setOpacity(0);}co++;}
+	       	function DamascusClick() {
+	       	if(da%2==0) {Damascus.setOpacity(1);
+	       		calcLatLng(Damascus);
+	       	} else {Damascus.setOpacity(0);}da++;}
+	       	function RhodesClick() {
+	       	if(rh%2==0) {Rhodes.setOpacity(1);
+	       		calcLatLng(Rhodes);
+	       	} else {Rhodes.setOpacity(0);}rh++;}
+	       	function AntiochClick() {
+	       	if(an%2==0) {Antioch.setOpacity(1);
+	       		calcLatLng(Antioch);
+	       	} else {Antioch.setOpacity(0);}an++;}
+	       	function NeapolisClick() {
+	       	if(ne%2==0) {Neapolis.setOpacity(1);
+	       		calcLatLng(Neapolis);
+	       	} else {Neapolis.setOpacity(0);}ne++;}
+	       	function CyprusClick() {
+	       	if(cy%2==0) {Cyprus.setOpacity(1);
+	       		calcLatLng(Cyprus);
+	       	} else {Cyprus.setOpacity(0);}cy++;}
+	       	function MiletusClick() {
+	       	if(mi%2==0) {Miletus.setOpacity(1);
+	       		calcLatLng(Miletus);
+	       	} else {MIletus.setOpacity(0);}mi++;}
+	       	function SidonClick() {
+	       	if(si%2==0) {Sidon.setOpacity(1);
+	       		calcLatLng(Sidon);
+	       	} else {Sidon.setOpacity(0);}si++;}
+	       	function EphesusClick() {
+	       	if(ep%2==0) {Ephesus.setOpacity(1);
+	       		calcLatLng(Ephesus);
+	       	} else {Ephesus.setOpacity(0);}ep++;}		
+		</script>
+</body>
+</html>
